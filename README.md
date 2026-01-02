@@ -7,12 +7,12 @@
 
 <!-- ===================== ASCII IDENTITY ===================== -->
 ```text
-██████╗  █████╗ ██████╗ ██╗  ██╗██╗
+██████╗  █████╗  ██████╗ ██╗  ██╗██╗
 ██╔══██╗██╔══██╗██╔══██╗██║ ██╔╝██║
 ██║  ██║███████║██████╔╝█████╔╝ ██║
 ██║  ██║██╔══██║██╔══██╗██╔═██╗ ██║
-██████╔╝██║  ██║██║  ██║██║  ██╗██║
-╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝
+██████╔╝██║  ██║██║  ██║██║  ██╗ ██║
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═╝
 
 BUILDER · SYSTEMS · LEVERAGE
 ```
@@ -28,7 +28,6 @@ I optimize control, leverage, and durability.
 
 If a process is manual, it’s broken.
 If it breaks often, it gets automated.
-
 
 ---
 
@@ -48,20 +47,6 @@ If it breaks often, it gets automated.
 > Ordered by usefulness, not popularity.
 
 ## Core
-
-1. Droots — pip-installable tooling
-2. Habitrax — habit & system tracking
-3. pnp — automated Git & workflow operations
-4. drace — integrity & automation tooling
-
-## Experimental
-
-- CLI prototypes
-- Low-level workflow experiments
-- Systems-in-progress
-
----
-
 ## Stack Snapshot
 
 Languages:
@@ -78,7 +63,6 @@ Focus:
   - CLI tooling
   - Automation
   - Workflow integrity
-
 
 ---
 
@@ -98,6 +82,8 @@ I’m here to build infrastructure, compress time, and compound leverage.
 ![](https://github-readme-stats.vercel.app/api?username=2kDarki&theme=dark&hide_border=false&include_all_commits=false&count_private=false)<br/>
 ![](https://nirzak-streak-stats.vercel.app/?user=2kDarki&theme=dark&hide_border=false)<br/>
 ![](https://github-readme-stats.vercel.app/api/top-langs/?username=2kDarki&theme=dark&hide_border=false&include_all_commits=false&count_private=false&layout=compact)
+
+---
 
 ### 🔝 Top Contributed Repo
 ![](https://github-contributor-stats.vercel.app/api?username=2kDarki&limit=10&theme=dark&combine_all_yearly_contributions=true)
