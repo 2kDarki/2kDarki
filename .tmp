@@ -1,0 +1,80 @@
+const http = require('http');
+const { exec } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+
+const PORT = 8085;
+const HOST = '127.0.0.1';
+
+// Header to allow CORS if needed (though RN to localhost usually is fine)
+const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type'
+};
+
+const server = http.createServer((req, res) => {
+    // Handle CORS preflight
+    if (req.method === 'OPTIONS') {
+        res.writeHead(204, headers);
+        res.end();
+        return;
+    }
+
+    if (req.method === 'GET' && req.url === '/ping') {
+        res.writeHead(200, headers);
+        res.end(JSON.stringify({ status: 'ok', message: 'Termux Bridge is active' }));
+        return;
+    }
+
+    if (req.method === 'POST' && req.url === '/exec') {
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+
+        req.on('end', () => {
+            try {
+                const { command, cwd } = JSON.parse(body);
+                console.log(`[EXEC] ${cwd || '.'} $ ${command}`);
+
+                const options = {
+                    cwd: cwd || undefined,
+                    maxBuffer: 1024 * 1024 * 10 // 10MB buffer
+                };
+
+                exec(command, options, (error, stdout, stderr) => {
+                    // We return 200 even on error, and let the client handle the exit code/stderr
+                    const response = {
+                        stdout: stdout || '',
+                        stderr: stderr || '',
+                        exitCode: error ? error.code : 0,
+                        error: error ? error.message : null
+                    };
+
+                    res.writeHead(200, headers);
+                    res.end(JSON.stringify(response));
+                });
+            } catch (e) {
+                res.writeHead(400, headers);
+                res.end(JSON.stringify({ error: 'Invalid JSON' }));
+            }
+        });
+        return;
+    }
+
+    res.writeHead(404, headers);
+    res.end(JSON.stringify({ error: 'Not Found' }));
+});
+
+server.listen(PORT, HOST, () => {
+    console.log(`
+🚀 Termux Bridge Server running!
+--------------------------------
+1.  Verify this window stays open.
+2.  The App can now execute git commands silently.
+3.  Listening on http://${HOST}:${PORT}
+--------------------------------
+    `);
+});
