@@ -1,9 +1,12 @@
+PS C:\Users\USER\github\examly> git pnp -pa
+
 [pnp] index/worktree mismatch detected; attempting index rebuild fallback
 [pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
 [pnp] line-ending normalization warning detected
 [pnp] index/worktree mismatch detected; attempting index rebuild fallback
 [pnp] index rebuilt but line-ending warning persists after renormalization attempt
-[pnp] manual steps: run 'git add --renormalize .', then retry pnp
+[pnp] attempting Windows-safe staging fallback with core.autocrlf=false
+[pnp] manual steps: run 'git -c core.autocrlf=false add --renormalize .', then retry pnp
 [pnp] if this still fails, run: git pnp -a --safe-reset
 [pnp] git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:
      in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of
