@@ -1,16 +1,5 @@
 PS C:\Users\USER\github\examly> git pnp -p
 
-[pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt; line-ending normalization warning remains, retrying
-[pnp] retrying step (1/3)...
-[pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt; line-ending normalization warning remains, retrying
-[pnp] retrying step (2/3)...
-[pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt; line-ending normalization warning remains, retrying
-[pnp] retrying step (3/3)...
-[pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt; line-ending normalization warning remains, retrying
 [pnp] git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:
      in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of
      'CONTEXT_HANDOFF.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'DEPLOY_ZERO_COST_ORA
@@ -27,29 +16,100 @@ PS C:\Users\USER\github\examly> git pnp -p
 ○ Push to remote
 ○ Publish tag
 ○ Create GitHub release
-[pnp] summary: workflow failed
-[pnp] fix: Inspect pnplog and rerun with --debug-report.
+[pnp] summary: commit step failed
+[pnp] fix: Inspect staged changes and commit message, then rerun.
 [pnp] error envelope written: \...\examly\pnplog\last_error_envelope.json
 [pnp] done
 
 PS C:\Users\USER\github\examly> git pnp -pa
 
 [pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt; line-ending normalization warning remains, retrying
-[pnp] retrying step (1/3)...
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
 [pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt; line-ending normalization warning remains, retrying
-[pnp] retrying step (2/3)...
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
 [pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt; line-ending normalization warning remains, retrying
-[pnp] retrying step (3/3)...
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
 [pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt; line-ending normalization warning remains, retrying
-[pnp] git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:
-     in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of
-     'CONTEXT_HANDOFF.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'DEPLOY_ZERO_COST_ORA
-     ...(truncated)
-
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
 ✔ Detect repository
 
    [pnp] repo root: \...\USER\github\examly
@@ -57,10 +117,12 @@ PS C:\Users\USER\github\examly> git pnp -pa
 
 ✖ Run hooks
 ✖ Run git machete
-✖ Stage and commit changes
+⠋ Stage and commit changes
 ○ Push to remote
 ○ Publish tag
 ○ Create GitHub release
+
+[pnp] forced exit
 [pnp] summary: workflow failed
 [pnp] fix: Inspect pnplog and rerun with --debug-report.
 [pnp] error envelope written: \...\examly\pnplog\last_error_envelope.json
