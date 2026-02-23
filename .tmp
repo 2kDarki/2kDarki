@@ -1,80 +1,67 @@
-const http = require('http');
-const { exec } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+PS C:\Users\USER\github\examly> git pnp -p
 
-const PORT = 8085;
-const HOST = '127.0.0.1';
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, retrying
+[pnp] retrying step (1/3)...
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, retrying
+[pnp] retrying step (2/3)...
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, retrying
+[pnp] retrying step (3/3)...
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, retrying
+[pnp] git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:
+     in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of
+     'CONTEXT_HANDOFF.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'DEPLOY_ZERO_COST_ORA
+     ...(truncated)
 
-// Header to allow CORS if needed (though RN to localhost usually is fine)
-const headers = {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type'
-};
+✔ Detect repository
 
-const server = http.createServer((req, res) => {
-    // Handle CORS preflight
-    if (req.method === 'OPTIONS') {
-        res.writeHead(204, headers);
-        res.end();
-        return;
-    }
+   [pnp] repo root: \...\USER\github\examly
+   [pnp] project type: generic
 
-    if (req.method === 'GET' && req.url === '/ping') {
-        res.writeHead(200, headers);
-        res.end(JSON.stringify({ status: 'ok', message: 'Termux Bridge is active' }));
-        return;
-    }
+✖ Run hooks
+✖ Run git machete
+✖ Stage and commit changes
+○ Push to remote
+○ Publish tag
+○ Create GitHub release
+[pnp] summary: workflow failed
+[pnp] fix: Inspect pnplog and rerun with --debug-report.
+[pnp] error envelope written: \...\examly\pnplog\last_error_envelope.json
+[pnp] done
 
-    if (req.method === 'POST' && req.url === '/exec') {
-        let body = '';
-        req.on('data', chunk => {
-            body += chunk.toString();
-        });
+PS C:\Users\USER\github\examly> git pnp -pa
 
-        req.on('end', () => {
-            try {
-                const { command, cwd } = JSON.parse(body);
-                console.log(`[EXEC] ${cwd || '.'} $ ${command}`);
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, retrying
+[pnp] retrying step (1/3)...
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, retrying
+[pnp] retrying step (2/3)...
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, retrying
+[pnp] retrying step (3/3)...
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, retrying
+[pnp] git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:
+     in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of
+     'CONTEXT_HANDOFF.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'DEPLOY_ZERO_COST_ORA
+     ...(truncated)
 
-                const options = {
-                    cwd: cwd || undefined,
-                    maxBuffer: 1024 * 1024 * 10 // 10MB buffer
-                };
+✔ Detect repository
 
-                exec(command, options, (error, stdout, stderr) => {
-                    // We return 200 even on error, and let the client handle the exit code/stderr
-                    const response = {
-                        stdout: stdout || '',
-                        stderr: stderr || '',
-                        exitCode: error ? error.code : 0,
-                        error: error ? error.message : null
-                    };
+   [pnp] repo root: \...\USER\github\examly
+   [pnp] project type: generic
 
-                    res.writeHead(200, headers);
-                    res.end(JSON.stringify(response));
-                });
-            } catch (e) {
-                res.writeHead(400, headers);
-                res.end(JSON.stringify({ error: 'Invalid JSON' }));
-            }
-        });
-        return;
-    }
-
-    res.writeHead(404, headers);
-    res.end(JSON.stringify({ error: 'Not Found' }));
-});
-
-server.listen(PORT, HOST, () => {
-    console.log(`
-🚀 Termux Bridge Server running!
---------------------------------
-1.  Verify this window stays open.
-2.  The App can now execute git commands silently.
-3.  Listening on http://${HOST}:${PORT}
---------------------------------
-    `);
-});
+✖ Run hooks
+✖ Run git machete
+✖ Stage and commit changes
+○ Push to remote
+○ Publish tag
+○ Create GitHub release
+[pnp] summary: workflow failed
+[pnp] fix: Inspect pnplog and rerun with --debug-report.
+[pnp] error envelope written: \...\examly\pnplog\last_error_envelope.json
+[pnp] done
