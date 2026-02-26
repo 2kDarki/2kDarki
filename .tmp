@@ -1,5 +1,7 @@
 PS C:\Users\USER\github\examly> git pnp -pa
 
+[pnp] git lock contention detected
+[pnp] retrying step (1/1)...
 [pnp] index/worktree mismatch detected; attempting index rebuild fallback
 [pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
 [pnp] line-ending normalization warning detected
@@ -10,7 +12,7 @@ PS C:\Users\USER\github\examly> git pnp -pa
 [pnp] if this still fails, run: git pnp -a --safe-reset
 [pnp] git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:
      in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of
-     'CONTEXT_HANDOFF.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'DEPLOY_ZERO_COST_ORA
+     'CONTENT_API_CONTRACT_V1.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'CONTEXT_HAND
      ...(truncated)
 
 ✔ Detect repository
@@ -28,3 +30,31 @@ PS C:\Users\USER\github\examly> git pnp -pa
 [pnp] fix: Inspect pnplog and rerun with --debug-report.
 [pnp] error envelope written: \...\examly\pnplog\last_error_envelope.json
 [pnp] done
+
+```examly\pnplog\last_error_envelope.json
+{
+  "code": "PNP_GIT_INDEX_WORKTREE_MISMATCH",
+  "severity": "error",
+  "category": "git",
+  "actionable": true,
+  "message": "git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:\n      in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of\n      'CONTENT_API_CONTRACT_V1.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'CONTEXT_HAND\n      ...(truncated)",
+  "operation": "workflow",
+  "step": "commit",
+  "stderr_excerpt": "git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:\n      in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of\n      'CONTENT_API_CONTRACT_V1.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of '",
+  "raw_ref": "pnplog/last_error_envelope.json",
+  "retryable": false,
+  "user_action_required": true,
+  "suggested_fix": "Inspect prior step output and rerun.",
+  "context": {
+    "path": "C:\\Users\\USER\\github\\examly",
+    "repo": "",
+    "branch": "",
+    "remote": "",
+    "ci_mode": false,
+    "dry_run": false
+  },
+  "schema": "pnp.error_envelope.v1",
+  "schema_version": 1,
+  "generated_at": "2026-02-26T17:32:45Z"
+}
+```
