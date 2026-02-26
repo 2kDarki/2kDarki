@@ -1,3 +1,71 @@
+PS C:\Users\USER\github\examly> git pnp -pa
+
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] line endings renormalized
+[pnp] changelog↴
+
+--------------------------------------------------------------| 2026-02-26T20:32:29 |---------------------------------------------------------------
+ca45335 [pnp] auto commit â€” updated code, config, docs, misc, and tests (2kDarki)
+
+[pnp] remote authentication failed
+[pnp] action disabled in CI mode
+[pnp] exiting...
+✔ Detect repository
+
+   [pnp] repo root: \...\USER\github\examly
+   [pnp] project type: generic
+
+✖ Run hooks
+✖ Run git machete
+✔ Stage and commit changes
+✖ Push to remote
+
+   [pnp] git fetch failed: git@github.com: Permission denied (publickey). fatal: Could not read from remote repository. Please make sure you have
+   the
+         correct access rights and the repository exists.
+
+○ Publish tag
+○ Create GitHub release
+[pnp] summary: workflow failed
+[pnp] fix: Inspect pnplog and rerun with --debug-report.
+[pnp] error envelope written: \...\examly\pnplog\last_error_envelope.json
+[pnp] done
+
+PS C:\Users\USER\github\examly> git pnp -pa
+
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
+[pnp] line-ending normalization warning detected
+[pnp] line endings renormalized
+[pnp] git commit failed: On branch main Untracked files: (use "git add <file>..." to include in what will be committed) .gitattributes .github/
+     .gitignore .semgrepignore AI_MATURITY_ROADMAP.md ARCHITECTURE.md CONTENT_API_CONTRACT_V1.md CONTENT_DIRECTORY_SCHEMA.md
+      CONTEXT_HANDOFF.md
+     DATA.md DEPLOYMENT.md DEPLOY_ZERO_COST_ORACLE.md DOMAINS.md EVENTS.md Examly_PDF_Parsing_&_Rendering_Instructions.md GRADIN
+      ...(truncated)
+
+✔ Detect repository
+
+   [pnp] repo root: \...\USER\github\examly
+   [pnp] project type: generic
+
+✖ Run hooks
+✖ Run git machete
+✖ Stage and commit changes
+
+   [pnp] rollback: unstaged index after failure
+   [pnp] rollback verified: index is clean
+
+○ Push to remote
+○ Publish tag
+○ Create GitHub release
+[pnp] summary: workflow failed
+[pnp] fix: Inspect pnplog and rerun with --debug-report.
+[pnp] error envelope written: \...\examly\pnplog\last_error_envelope.json
+[pnp] done
+
+```examly\pnplog\last_error_envelope.json
 {
   "code": "PNP_GIT_INDEX_WORKTREE_MISMATCH",
   "severity": "error",
@@ -22,4 +90,4 @@
   "schema": "pnp.error_envelope.v1",
   "schema_version": 1,
   "generated_at": "2026-02-26T18:33:27Z"
-}
+}```
