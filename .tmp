@@ -3,15 +3,26 @@ PS C:\Users\USER\github\examly> git pnp -pa
 [pnp] index/worktree mismatch detected; attempting index rebuild fallback
 [pnp] index rebuilt but line-ending warning persists after renormalization attempt
 [pnp] attempting Windows-safe staging fallback with core.autocrlf=false
-[pnp] attempting nuclear index rebuild (git rm --cached -r . + re-add)
-[pnp] nuclear rebuild failed: warning: in the working copy of '.github/CODEOWNERS', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git tou
-[pnp] manual steps: run 'git -c core.autocrlf=false add --renormalize .', then retry pnp
-[pnp] if this still fails, run: git pnp -a --safe-reset
-[pnp] git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:
-     in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of
-     'CONTEXT_HANDOFF.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'DEPLOY_ZERO_COST_ORA
-     ...(truncated)
+[pnp] line-ending staging succeeded with core.autocrlf=false
+[pnp] retrying step (1/3)...
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt but line-ending warning persists after renormalization attempt
+[pnp] attempting Windows-safe staging fallback with core.autocrlf=false
+[pnp] line-ending staging succeeded with core.autocrlf=false
+[pnp] retrying step (2/3)...
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt but line-ending warning persists after renormalization attempt
+[pnp] attempting Windows-safe staging fallback with core.autocrlf=false
+[pnp] line-ending staging succeeded with core.autocrlf=false
+[pnp] retrying step (3/3)...
+[pnp] index/worktree mismatch detected; attempting index rebuild fallback
+[pnp] index rebuilt but line-ending warning persists after renormalization attempt
+[pnp] attempting Windows-safe staging fallback with core.autocrlf=false
+[pnp] line-ending staging succeeded with core.autocrlf=false
+[pnp] git add failed: warning: in the working copy of '.github/CODEOWNERS', LF will be replaced by CRLF the next time Git touches it warning: in the
+     working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of
+     '.github/workflows/release-gates.yml', LF will be replaced by CRLF the next time Git touches it warning: in the working copy
+      ...(truncated)
 
 ✔ Detect repository
 
@@ -35,10 +46,10 @@ warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced 
   "severity": "error",
   "category": "git",
   "actionable": true,
-  "message": "git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:\n      in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of\n      'CONTEXT_HANDOFF.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'DEPLOY_ZERO_COST_ORA\n      ...(truncated)",
+  "message": "git add failed: warning: in the working copy of '.github/CODEOWNERS', LF will be replaced by CRLF the next time Git touches it warning: in the\n      working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of\n      '.github/workflows/release-gates.yml', LF will be replaced by CRLF the next time Git touches it warning: in the working copy ...(truncated)",
   "operation": "workflow",
   "step": "commit",
-  "stderr_excerpt": "git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:\n      in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of\n      'CONTEXT_HANDOFF.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'DEPLOY_Z",
+  "stderr_excerpt": "git add failed: warning: in the working copy of '.github/CODEOWNERS', LF will be replaced by CRLF the next time Git touches it warning: in the\n      working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of\n      '.github/workflows/release-gates.yml', LF will be replaced by CRLF the next time Git touches it warning: in the ",
   "raw_ref": "pnplog/last_error_envelope.json",
   "retryable": false,
   "user_action_required": true,
@@ -53,6 +64,6 @@ warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced 
   },
   "schema": "pnp.error_envelope.v1",
   "schema_version": 1,
-  "generated_at": "2026-02-26T17:47:58Z"
+  "generated_at": "2026-02-26T18:00:21Z"
 }
 ```
