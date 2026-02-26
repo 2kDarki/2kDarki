@@ -1,55 +1,12 @@
-PS C:\Users\USER\github\examly> git pnp -pa
-
-[pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt but line-ending warning persists after renormalization attempt
-[pnp] attempting Windows-safe staging fallback with core.autocrlf=false
-[pnp] line-ending staging succeeded with core.autocrlf=false
-[pnp] retrying step (1/3)...
-[pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt but line-ending warning persists after renormalization attempt
-[pnp] attempting Windows-safe staging fallback with core.autocrlf=false
-[pnp] line-ending staging succeeded with core.autocrlf=false
-[pnp] retrying step (2/3)...
-[pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt but line-ending warning persists after renormalization attempt
-[pnp] attempting Windows-safe staging fallback with core.autocrlf=false
-[pnp] line-ending staging succeeded with core.autocrlf=false
-[pnp] retrying step (3/3)...
-[pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt but line-ending warning persists after renormalization attempt
-[pnp] attempting Windows-safe staging fallback with core.autocrlf=false
-[pnp] line-ending staging succeeded with core.autocrlf=false
-[pnp] git add failed: warning: in the working copy of '.github/CODEOWNERS', LF will be replaced by CRLF the next time Git touches it warning: in the
-     working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of
-     '.github/workflows/release-gates.yml', LF will be replaced by CRLF the next time Git touches it warning: in the working copy
-      ...(truncated)
-
-✔ Detect repository
-
-   [pnp] repo root: \...\USER\github\examly
-   [pnp] project type: generic
-
-✖ Run hooks
-✖ Run git machete
-✖ Stage and commit changes
-○ Push to remote
-○ Publish tag
-○ Create GitHub release
-[pnp] summary: workflow failed
-[pnp] fix: Inspect pnplog and rerun with --debug-report.
-[pnp] error envelope written: \...\examly\pnplog\last_error_envelope.json
-[pnp] done
-
-```examly\pnplog\last_error_envelope.json
 {
   "code": "PNP_GIT_INDEX_WORKTREE_MISMATCH",
   "severity": "error",
   "category": "git",
   "actionable": true,
-  "message": "git add failed: warning: in the working copy of '.github/CODEOWNERS', LF will be replaced by CRLF the next time Git touches it warning: in the\n      working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of\n      '.github/workflows/release-gates.yml', LF will be replaced by CRLF the next time Git touches it warning: in the working copy ...(truncated)",
+  "message": "git commit failed: On branch main Untracked files: (use \"git add <file>...\" to include in what will be committed) .gitattributes .github/\n      .gitignore .semgrepignore AI_MATURITY_ROADMAP.md ARCHITECTURE.md CONTENT_API_CONTRACT_V1.md CONTENT_DIRECTORY_SCHEMA.md CONTEXT_HANDOFF.md\n      DATA.md DEPLOYMENT.md DEPLOY_ZERO_COST_ORACLE.md DOMAINS.md EVENTS.md Examly_PDF_Parsing_&_Rendering_Instructions.md GRADIN ...(truncated)",
   "operation": "workflow",
   "step": "commit",
-  "stderr_excerpt": "git add failed: warning: in the working copy of '.github/CODEOWNERS', LF will be replaced by CRLF the next time Git touches it warning: in the\n      working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of\n      '.github/workflows/release-gates.yml', LF will be replaced by CRLF the next time Git touches it warning: in the ",
+  "stderr_excerpt": "git commit failed: On branch main Untracked files: (use \"git add <file>...\" to include in what will be committed) .gitattributes .github/\n      .gitignore .semgrepignore AI_MATURITY_ROADMAP.md ARCHITECTURE.md CONTENT_API_CONTRACT_V1.md CONTENT_DIRECTORY_SCHEMA.md CONTEXT_HANDOFF.md\n      DATA.md DEPLOYMENT.md DEPLOY_ZERO_COST_ORACLE.md DOMAINS.md EVENTS.md Examly_PDF_Parsing_&_Rendering_Instructio",
   "raw_ref": "pnplog/last_error_envelope.json",
   "retryable": false,
   "user_action_required": true,
@@ -64,6 +21,5 @@ PS C:\Users\USER\github\examly> git pnp -pa
   },
   "schema": "pnp.error_envelope.v1",
   "schema_version": 1,
-  "generated_at": "2026-02-26T18:00:21Z"
+  "generated_at": "2026-02-26T18:33:27Z"
 }
-```
