@@ -1,18 +1,16 @@
 PS C:\Users\USER\github\examly> git pnp -pa
 
-[pnp] git lock contention detected
-[pnp] retrying step (1/1)...
-[pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
-[pnp] line-ending normalization warning detected
 [pnp] index/worktree mismatch detected; attempting index rebuild fallback
 [pnp] index rebuilt but line-ending warning persists after renormalization attempt
 [pnp] attempting Windows-safe staging fallback with core.autocrlf=false
+[pnp] attempting nuclear index rebuild (git rm --cached -r . + re-add)
+[pnp] nuclear rebuild failed: warning: in the working copy of '.github/CODEOWNERS', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git tou
 [pnp] manual steps: run 'git -c core.autocrlf=false add --renormalize .', then retry pnp
 [pnp] if this still fails, run: git pnp -a --safe-reset
 [pnp] git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:
      in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of
-     'CONTENT_API_CONTRACT_V1.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'CONTEXT_HAND
+     'CONTEXT_HANDOFF.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'DEPLOY_ZERO_COST_ORA
      ...(truncated)
 
 ✔ Detect repository
@@ -37,10 +35,10 @@ PS C:\Users\USER\github\examly> git pnp -pa
   "severity": "error",
   "category": "git",
   "actionable": true,
-  "message": "git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:\n      in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of\n      'CONTENT_API_CONTRACT_V1.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'CONTEXT_HAND\n      ...(truncated)",
+  "message": "git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:\n      in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of\n      'CONTEXT_HANDOFF.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'DEPLOY_ZERO_COST_ORA\n      ...(truncated)",
   "operation": "workflow",
   "step": "commit",
-  "stderr_excerpt": "git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:\n      in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of\n      'CONTENT_API_CONTRACT_V1.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of '",
+  "stderr_excerpt": "git add failed: warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it warning:\n      in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of\n      'CONTEXT_HANDOFF.md', LF will be replaced by CRLF the next time Git touches it warning: in the working copy of 'DEPLOY_Z",
   "raw_ref": "pnplog/last_error_envelope.json",
   "retryable": false,
   "user_action_required": true,
@@ -55,6 +53,6 @@ PS C:\Users\USER\github\examly> git pnp -pa
   },
   "schema": "pnp.error_envelope.v1",
   "schema_version": 1,
-  "generated_at": "2026-02-26T17:32:45Z"
+  "generated_at": "2026-02-26T17:47:58Z"
 }
 ```
