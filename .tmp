@@ -1,93 +1,50 @@
-PS C:\Users\USER\github\examly> git pnp -pa
+# Workflow Orchestration
 
-[pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
-[pnp] line-ending normalization warning detected
-[pnp] line endings renormalized
-[pnp] changelog↴
+### 1. Plan Node Default
+- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
+- If something goes sideways, STOP and re-plan immediately - don't keep pushing
+- Use plan mode for verification steps, not just building
+- Write detailed specs upfront to reduce ambiguity
 
---------------------------------------------------------------| 2026-02-26T20:32:29 |---------------------------------------------------------------
-ca45335 [pnp] auto commit â€” updated code, config, docs, misc, and tests (2kDarki)
+### 2. Subagent Strategy
+- Use subagents liberally to keep main context window clean
+- Offload research, exploration, and parallel analysis to subagents
+- For complex problems, throw more compute at it via subagents
+- One tack per subagent for focused execution
 
-[pnp] remote authentication failed
-[pnp] action disabled in CI mode
-[pnp] exiting...
-✔ Detect repository
+### 3. Self-Improvement Loop
+- After ANY correction from the user: update `tasks/lessons.md with the pattern
+- Write rules for yourself that prevent the same mistake
+- Ruthlessly iterate on these lessons until mistake rate drops
+- Review lessons at session start for relevant project
 
-   [pnp] repo root: \...\USER\github\examly
-   [pnp] project type: generic
+### 4. Verification Before Done
+- Never mark a task complete without proving it works
+- Diff behavior between main and your changes when relevant
+- Ask yourself: "Would a staff engineer approve this?"
+- Run tests, check logs, demonstrate correctness
 
-✖ Run hooks
-✖ Run git machete
-✔ Stage and commit changes
-✖ Push to remote
+### 5. Demand Elegance (Balanced)
+- For non-trivial changes: pause and ask "is there a more elegant way?"
+- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
+- Skip this for simple, obvious fixes - don't over-engineer
+Challenge your own work before presenting it
 
-   [pnp] git fetch failed: git@github.com: Permission denied (publickey). fatal: Could not read from remote repository. Please make sure you have
-   the
-         correct access rights and the repository exists.
+### 6. Autonomous Bug Fizing
+- When given a bug report: just fix it. Don't ask for hand-holding
+- Point at logs, errors, failing tests - then resolve them
+- Zero context switching required from the user
+- Go fix failing CI tests without being told how
 
-○ Publish tag
-○ Create GitHub release
-[pnp] summary: workflow failed
-[pnp] fix: Inspect pnplog and rerun with --debug-report.
-[pnp] error envelope written: \...\examly\pnplog\last_error_envelope.json
-[pnp] done
+## Task Management
+1. **Plan First*: Write plan to `tasks/todo.md with checkable items
+2. **Verify Plan**: Check in before starting implementation
+3. **Track Progress**: Mark items complete as you go
+4. **Explain Changes*: High-level summary at each step
+5. **Document Results**: Add review section to `tasks/todo.md
+6. **Capture Lessons**: Update tasks/lessons.md after corrections
 
-PS C:\Users\USER\github\examly> git pnp -pa
-
-[pnp] index/worktree mismatch detected; attempting index rebuild fallback
-[pnp] index rebuilt; line-ending normalization warning remains, handing off remediation
-[pnp] line-ending normalization warning detected
-[pnp] line endings renormalized
-[pnp] git commit failed: On branch main Untracked files: (use "git add <file>..." to include in what will be committed) .gitattributes .github/
-     .gitignore .semgrepignore AI_MATURITY_ROADMAP.md ARCHITECTURE.md CONTENT_API_CONTRACT_V1.md CONTENT_DIRECTORY_SCHEMA.md
-      CONTEXT_HANDOFF.md
-     DATA.md DEPLOYMENT.md DEPLOY_ZERO_COST_ORACLE.md DOMAINS.md EVENTS.md Examly_PDF_Parsing_&_Rendering_Instructions.md GRADIN
-      ...(truncated)
-
-✔ Detect repository
-
-   [pnp] repo root: \...\USER\github\examly
-   [pnp] project type: generic
-
-✖ Run hooks
-✖ Run git machete
-✖ Stage and commit changes
-
-   [pnp] rollback: unstaged index after failure
-   [pnp] rollback verified: index is clean
-
-○ Push to remote
-○ Publish tag
-○ Create GitHub release
-[pnp] summary: workflow failed
-[pnp] fix: Inspect pnplog and rerun with --debug-report.
-[pnp] error envelope written: \...\examly\pnplog\last_error_envelope.json
-[pnp] done
-
-```examly\pnplog\last_error_envelope.json
-{
-  "code": "PNP_GIT_INDEX_WORKTREE_MISMATCH",
-  "severity": "error",
-  "category": "git",
-  "actionable": true,
-  "message": "git commit failed: On branch main Untracked files: (use \"git add <file>...\" to include in what will be committed) .gitattributes .github/\n      .gitignore .semgrepignore AI_MATURITY_ROADMAP.md ARCHITECTURE.md CONTENT_API_CONTRACT_V1.md CONTENT_DIRECTORY_SCHEMA.md CONTEXT_HANDOFF.md\n      DATA.md DEPLOYMENT.md DEPLOY_ZERO_COST_ORACLE.md DOMAINS.md EVENTS.md Examly_PDF_Parsing_&_Rendering_Instructions.md GRADIN ...(truncated)",
-  "operation": "workflow",
-  "step": "commit",
-  "stderr_excerpt": "git commit failed: On branch main Untracked files: (use \"git add <file>...\" to include in what will be committed) .gitattributes .github/\n      .gitignore .semgrepignore AI_MATURITY_ROADMAP.md ARCHITECTURE.md CONTENT_API_CONTRACT_V1.md CONTENT_DIRECTORY_SCHEMA.md CONTEXT_HANDOFF.md\n      DATA.md DEPLOYMENT.md DEPLOY_ZERO_COST_ORACLE.md DOMAINS.md EVENTS.md Examly_PDF_Parsing_&_Rendering_Instructio",
-  "raw_ref": "pnplog/last_error_envelope.json",
-  "retryable": false,
-  "user_action_required": true,
-  "suggested_fix": "Inspect prior step output and rerun.",
-  "context": {
-    "path": "C:\\Users\\USER\\github\\examly",
-    "repo": "",
-    "branch": "",
-    "remote": "",
-    "ci_mode": false,
-    "dry_run": false
-  },
-  "schema": "pnp.error_envelope.v1",
-  "schema_version": 1,
-  "generated_at": "2026-02-26T18:33:27Z"
-}```
+## Core Principles
+**Simplicity First*: Make every change as simple as possible. Impact minimal code.
+**No Laziness**: Find root cause. No temporary fixes. Senior developer standards.
+**Minimal Impact**: Changes should only touch what is necessary. Avoid introducing bugs.
