@@ -239,6 +239,8 @@ PYEOF
 
 python "$SETUP_DIR/generate_logo.py"
 
+touch "$HOME/.hushlogin"
+
 # ----------------------------------------------------------
 # 10. Reload shell into zsh (this alone replaces the old 
 #     manual instructions — sourcing .zshrc triggers the 
