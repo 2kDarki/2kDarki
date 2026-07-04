@@ -57,6 +57,8 @@ echo ""
 echo "Reloading Termux settings..."
 termux-reload-settings || true
 
+chsh -s zsh
+
 echo ""
 echo "DONE."
 echo ""
