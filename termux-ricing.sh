@@ -34,7 +34,7 @@ pkg upgrade -y
 # 3. Install dependencies
 # ----------------------------------------------------------
 step 3 "Installing dependencies..."
-pkg install -y git zsh curl unzip fontconfig imagemagick chafa fastfetch python lsd
+pkg install -y openssl git zsh curl unzip fontconfig imagemagick chafa fastfetch python lsd
 
 # ------------------------------------------------------------
 # 4. Install Oh My Zsh (unattended)
