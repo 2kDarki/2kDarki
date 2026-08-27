@@ -17,26 +17,23 @@ step() {
   echo "[$1/$TOTAL_STEPS] $2"
 }
 
-# ----------------------------------------------------------
-# Environment Detection & Package Manager Abstraction
-# ----------------------------------------------------------
-IS_TERMUX=false
-IS_MACOS=false
-SUDO=""
+# --------------------------------------------------
+# Environment & Binary Detection
+# --------------------------------------------------
+IS_TERMUX_NATIVE=false
+IS_PROOT=false
+HOST_TERMUX_HOME="/data/data/com.termux/files/home"
 
-if [ -d "/data/data/com.termux" ] || [ -n "$TERMUX_VERSION" ]; then
-  IS_TERMUX=true
-elif [ "$(uname)" = "Darwin" ]; then
-  IS_MACOS=true
-elif [ "$(id -u)" -ne 0 ]; then
-  if command -v sudo >/dev/null 2>&1; then
-    SUDO="sudo"
-  fi
+if command -v pkg >/dev/null 2>&1; then
+  IS_TERMUX_NATIVE=true
+elif [ -d "$HOST_TERMUX_HOME" ]; then
+  IS_PROOT=true
 fi
 
+# Package manager execution based on command availability, not paths
 install_packages() {
   local pkgs=("$@")
-  if [ "$IS_TERMUX" = true ]; then
+  if command -v pkg >/dev/null 2>&1; then
     pkg update -y && pkg install -y "${pkgs[@]}"
   elif command -v apt-get >/dev/null 2>&1; then
     $SUDO apt-get update -y && $SUDO apt-get install -y "${pkgs[@]}"
@@ -54,25 +51,25 @@ install_packages() {
   fi
 }
 
-# ----------------------------------------------------------
+# --------------------------------------------------
 # 1 & 2. Update and Upgrade
-# ----------------------------------------------------------
+# --------------------------------------------------
 step 1 "Updating package repositories..."
 step 2 "Upgrading system packages..."
 # Handled directly inside install_packages logic step
 
-# ----------------------------------------------------------
+# --------------------------------------------------
 # 3. Install dependencies
-# ----------------------------------------------------------
+# --------------------------------------------------
 step 3 "Installing dependencies..."
 PKGS=(openssl git zsh curl unzip fontconfig imagemagick chafa fastfetch python3 lsd)
 [ "$IS_TERMUX" = true ] && PKGS=(openssl git zsh curl unzip fontconfig imagemagick chafa fastfetch python lsd)
 
 install_packages "${PKGS[@]}"
 
-# ----------------------------------------------------------
+# --------------------------------------------------
 # 4. Install Oh My Zsh
-# ----------------------------------------------------------
+# --------------------------------------------------
 step 4 "Installing Oh My Zsh..."
 if [ -d "$HOME/.oh-my-zsh" ]; then
   echo "Oh My Zsh already installed, skipping."
@@ -81,9 +78,9 @@ else
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
-# ----------------------------------------------------------
+# --------------------------------------------------
 # 5. Install Powerlevel10k
-# ----------------------------------------------------------
+# --------------------------------------------------
 step 5 "Installing Powerlevel10k..."
 P10K_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
 if [ -d "$P10K_DIR" ]; then
@@ -99,9 +96,9 @@ else
   echo 'ZSH_THEME="powerlevel10k/powerlevel10k"' >> "$ZSHRC"
 fi
 
-# ----------------------------------------------------------
+# --------------------------------------------------
 # 6. Install Nerd Font (FiraCode Mono)
-# ----------------------------------------------------------
+# --------------------------------------------------
 step 6 "Installing Nerd Font (FiraCode Mono)..."
 TMP_ZIP="$HOME/nerdfont.zip"
 TMP_DIR="$HOME/nerdfont_tmp"
@@ -121,10 +118,19 @@ if [ -z "$FONT_FILE" ]; then
   exit 1
 fi
 
-if [ "$IS_TERMUX" = true ]; then
+if [ "$IS_TERMUX_NATIVE" = true ]; then
   mkdir -p ~/.termux
   cp "$FONT_FILE" ~/.termux/font.ttf
   termux-reload-settings || true
+elif [ "$IS_PROOT" = true ] && [ -d "$HOST_TERMUX_HOME" ]; then
+  mkdir -p "$HOME/.local/share/fonts"
+  cp "$FONT_FILE" "$HOME/.local/share/fonts/"
+  mkdir -p "$HOST_TERMUX_HOME/.termux"
+  cp "$FONT_FILE" "$HOST_TERMUX_HOME/.termux/font.ttf"
+  HOST_RELOAD="/data/data/com.termux/files/usr/bin/termux-reload-settings"
+  if [ -x "$HOST_RELOAD" ]; then
+    "$HOST_RELOAD" || true
+  fi
 elif [ "$IS_MACOS" = true ]; then
   mkdir -p "$HOME/Library/Fonts"
   cp "$FONT_FILE" "$HOME/Library/Fonts/"
@@ -148,9 +154,9 @@ if ! grep -q 'alias ls="lsd"' "$ZSHRC"; then
   echo 'alias ls="lsd"' >> "$ZSHRC"
 fi
 
-# ----------------------------------------------------------
+# --------------------------------------------------
 # 7. Wire fastfetch into .zshrc
-# ----------------------------------------------------------
+# --------------------------------------------------
 step 7 "Wiring fastfetch into .zshrc..."
 if ! grep -qx 'fastfetch' "$ZSHRC"; then
   echo -e "fastfetch\n$(cat "$ZSHRC")" > "$ZSHRC"
@@ -158,14 +164,16 @@ else
   echo "fastfetch already present in .zshrc, skipping."
 fi
 
-# ----------------------------------------------------------
+# --------------------------------------------------
 # 8. Write fastfetch config
-# ----------------------------------------------------------
+# --------------------------------------------------
 step 8 "Writing fastfetch config..."
 mkdir -p "$FASTFETCH_CFG_DIR"
 
 DISK_FOLDER="/"
-[ "$IS_TERMUX" = true ] && DISK_FOLDER="/storage/emulated"
+if [ "$IS_TERMUX_NATIVE" = true ] || [ -d "/storage/emulated" ]; then
+  DISK_FOLDER="/storage/emulated"
+fi
 
 cat > "$FASTFETCH_CFG_DIR/config.jsonc" << EOF
 {
@@ -204,9 +212,9 @@ cat > "$FASTFETCH_CFG_DIR/config.jsonc" << EOF
 }
 EOF
 
-# ----------------------------------------------------------
+# --------------------------------------------------
 # 9. Fastfetch logo generator
-# ----------------------------------------------------------
+# --------------------------------------------------
 step 9 "Setting up fastfetch logo..."
 mkdir -p "$SETUP_DIR"
 
@@ -279,8 +287,8 @@ $PYTHON_BIN "$SETUP_DIR/generate_logo.py"
 
 touch "$HOME/.hushlogin"
 
-# ----------------------------------------------------------
+# --------------------------------------------------
 # 10. Reload into Zsh
-# ----------------------------------------------------------
+# --------------------------------------------------
 step 10 "Done. Reloading into zsh..."
 exec "$ZSH_PATH" -l
