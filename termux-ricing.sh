@@ -237,8 +237,7 @@ import shutil
 import subprocess
 import sys
 
-FASTFETCH_LOGO = os.path.expanduser("~/fastfetch/logo.txt")
-[ "$HOME" = "/root" ] && FASTFETCH_LOGO="/root/.config/fastfetch/logo.txt"
+FASTFETCH_LOGO = os.path.expanduser("~/.config/fastfetch/logo.txt")
 
 def check_dependencies():
     missing = [tool for tool in ("magick", "chafa") if shutil.which(tool) is None]
@@ -250,7 +249,6 @@ def check_dependencies():
 def prompt_for_image():
     print("Enter path to image (or press Enter to skip):")
     try:
-        # Re-attach sys.stdin to controlling terminal if piped
         if not sys.stdin.isatty():
             try:
                 sys.stdin = open('/dev/tty', 'r')
@@ -262,7 +260,10 @@ def prompt_for_image():
         if not raw:
             return None
         path = os.path.expanduser(raw)
-        return path if os.path.isfile(path) else None
+        if os.path.isfile(path):
+            return path
+        print(f"File not found: {path}. Skipping logo setup.")
+        return None
     except (EOFError, KeyboardInterrupt, OSError):
         print("\nSkipping logo setup.")
         return None
@@ -312,13 +313,7 @@ if __name__ == "__main__":
 PYEOF
 
 PYTHON_BIN=$(command -v python3 || command -v python)
-
-# Force reading from /dev/tty if interactive terminal exists, otherwise fail quietly without crashing script
-if [ -c /dev/tty ]; then
-  $PYTHON_BIN "$SETUP_DIR/generate_logo.py" < /dev/tty || true
-else
-  $PYTHON_BIN "$SETUP_DIR/generate_logo.py" || true
-fi
+$PYTHON_BIN "$SETUP_DIR/generate_logo.py" || true
 
 touch "$HOME/.hushlogin"
 
