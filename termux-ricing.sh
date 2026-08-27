@@ -23,20 +23,32 @@ step() {
 IS_TERMUX_NATIVE=false
 IS_PROOT=false
 HOST_TERMUX_HOME="/data/data/com.termux/files/home"
+SUDO=""
 
-if command -v pkg >/dev/null 2>&1; then
-  IS_TERMUX_NATIVE=true
-elif [ -d "$HOST_TERMUX_HOME" ]; then
-  IS_PROOT=true
+if [ "$(id -u)" -eq 0 ]; then
+  # Running as root: Either inside PRoot distro or root subshell
+  if [ -d "$HOST_TERMUX_HOME" ] || [ -f "/data/data/com.termux/files/usr/bin/termux-reload-settings" ]; then
+    IS_PROOT=true
+  fi
+else
+  # Running as normal user
+  if [ -n "$TERMUX_VERSION" ] || [[ "$PREFIX" == *com.termux* ]]; then
+    IS_TERMUX_NATIVE=true
+  elif command -v sudo >/dev/null 2>&1; then
+    SUDO="sudo"
+  fi
 fi
 
-# Package manager execution based on command availability, not paths
+# Package manager execution based on privileges and native tools
 install_packages() {
   local pkgs=("$@")
-  if command -v pkg >/dev/null 2>&1; then
+
+  # Use 'pkg' ONLY if non-root and running natively in Termux
+  if [ "$IS_TERMUX_NATIVE" = true ] && command -v pkg >/dev/null 2>&1; then
     pkg update -y && pkg install -y "${pkgs[@]}"
   elif command -v apt-get >/dev/null 2>&1; then
-    $SUDO apt-get update -y && $SUDO apt-get install -y "${pkgs[@]}"
+    DEBIAN_FRONTEND=noninteractive $SUDO apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive $SUDO apt-get install -y "${pkgs[@]}"
   elif command -v pacman >/dev/null 2>&1; then
     $SUDO pacman -Sy --noconfirm "${pkgs[@]}"
   elif command -v dnf >/dev/null 2>&1; then
