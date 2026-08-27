@@ -230,40 +230,57 @@ EOF
 step 9 "Setting up fastfetch logo..."
 mkdir -p "$SETUP_DIR"
 
-cat > "$SETUP_DIR/generate_logo.py" << PYEOF
+cat > "$SETUP_DIR/generate_logo.py" << 'PYEOF'
 #!/usr/bin/env python3
 import os
 import shutil
 import subprocess
 import sys
 
-FASTFETCH_LOGO = os.path.expanduser("$FASTFETCH_LOGO")
+FASTFETCH_LOGO = os.path.expanduser("~/fastfetch/logo.txt")
+[ "$HOME" = "/root" ] && FASTFETCH_LOGO="/root/.config/fastfetch/logo.txt"
 
 def check_dependencies():
     missing = [tool for tool in ("magick", "chafa") if shutil.which(tool) is None]
     if missing:
         print(f"Missing required tools: {', '.join(missing)}")
-        sys.exit(1)
+        return False
+    return True
 
 def prompt_for_image():
-    while True:
-        raw = input("Enter path to image: ").strip().strip("'\"")
+    print("Enter path to image (or press Enter to skip):")
+    try:
+        # Re-attach sys.stdin to controlling terminal if piped
+        if not sys.stdin.isatty():
+            try:
+                sys.stdin = open('/dev/tty', 'r')
+            except (OSError, PermissionError):
+                print("No controlling terminal available. Skipping logo setup.")
+                return None
+
+        raw = input("> ").strip().strip("'\"")
+        if not raw:
+            return None
         path = os.path.expanduser(raw)
-        if os.path.isfile(path):
-            return path
-        print(f"File not found: {path}\n")
+        return path if os.path.isfile(path) else None
+    except (EOFError, KeyboardInterrupt, OSError):
+        print("\nSkipping logo setup.")
+        return None
 
 def prompt_for_gamma():
-    default = "1.5"
-    raw = input(f"Gamma correction value [default {default}]: ").strip() or default
     try:
+        default = "1.5"
+        raw = input(f"Gamma correction value [default {default}]: ").strip() or default
         float(raw)
         return raw
-    except ValueError:
-        return default
+    except Exception:
+        return "1.5"
 
 def prompt_for_size():
-    return input("Chafa size as WIDTHxHEIGHT [default 31x50]: ").strip() or "31x50"
+    try:
+        return input("Chafa size as WIDTHxHEIGHT [default 31x50]: ").strip() or "31x50"
+    except Exception:
+        return "31x50"
 
 def convert_and_render(image_path, gamma, size):
     os.makedirs(os.path.dirname(FASTFETCH_LOGO), exist_ok=True)
@@ -276,16 +293,16 @@ def convert_and_render(image_path, gamma, size):
         p1.stdout.close()
         p2.communicate()
 
-    if p2.returncode != 0:
-        print("chafa conversion failed.")
-        sys.exit(1)
-
-    print(f"Logo saved to {FASTFETCH_LOGO}")
+    if p2.returncode == 0:
+        print(f"Logo successfully saved to {FASTFETCH_LOGO}")
 
 def main():
-    check_dependencies()
+    if not check_dependencies():
+        return
     print("=== Fastfetch Logo Generator ===")
     image_path = prompt_for_image()
+    if not image_path:
+        return
     gamma = prompt_for_gamma()
     size = prompt_for_size()
     convert_and_render(image_path, gamma, size)
@@ -295,7 +312,13 @@ if __name__ == "__main__":
 PYEOF
 
 PYTHON_BIN=$(command -v python3 || command -v python)
-$PYTHON_BIN "$SETUP_DIR/generate_logo.py"
+
+# Force reading from /dev/tty if interactive terminal exists, otherwise fail quietly without crashing script
+if [ -c /dev/tty ]; then
+  $PYTHON_BIN "$SETUP_DIR/generate_logo.py" < /dev/tty || true
+else
+  $PYTHON_BIN "$SETUP_DIR/generate_logo.py" || true
+fi
 
 touch "$HOME/.hushlogin"
 
