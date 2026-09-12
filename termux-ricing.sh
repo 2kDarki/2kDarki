@@ -133,11 +133,23 @@ echo "Fetch tool: ${FETCH_BIN:-none}; lsd: $HAS_LSD."
 # 4. Install Oh My Zsh
 # --------------------------------------------------
 step 4 "Installing Oh My Zsh..."
-if [ -d "$HOME/.oh-my-zsh" ]; then
+if [ -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
   echo "Oh My Zsh already installed, skipping."
 else
+  if [ -d "$HOME/.oh-my-zsh" ]; then
+    # A directory without the entrypoint is a broken/partial install
+    # (e.g. only custom/themes from a later step). The real installer
+    # refuses a non-empty target, so clear it for a clean reinstall;
+    # step 5 re-clones the theme afterwards.
+    echo "Found an incomplete Oh My Zsh install; clearing it for a clean reinstall."
+    rm -rf "$HOME/.oh-my-zsh"
+  fi
   RUNZSH=no CHSH=no KEEP_ZSHRC=yes \
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  if [ ! -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
+    echo "ERROR: Oh My Zsh install did not complete."
+    exit 1
+  fi
 fi
 
 # The installer never touches a pre-existing .zshrc (we pre-create it
