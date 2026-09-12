@@ -262,17 +262,27 @@ else
 fi
 
 # --------------------------------------------------
-# 7. Wire fetch tool into .zshrc
+# 7. Wire fetch tool into .zshrc, always at line 1
 # --------------------------------------------------
 if [ -z "$FETCH_BIN" ]; then
   step 7 "No fetch tool available; skipping."
 else
-  step 7 "Wiring $FETCH_BIN into .zshrc..."
-  if ! grep -qx "$FETCH_BIN" "$ZSHRC"; then
-    echo -e "$FETCH_BIN\n$(cat "$ZSHRC")" > "$ZSHRC"
-  else
-    echo "$FETCH_BIN already present in .zshrc, skipping."
+  step 7 "Wiring $FETCH_BIN into .zshrc (line 1)..."
+  # The fetch call must stay the first line, above p10k's instant-prompt
+  # block: `p10k configure` inserts its block at the top, pushing a
+  # previously wired call down, and output below the block trips p10k's
+  # console-I/O-during-preamble warning. So strip any existing fetch
+  # invocation wherever it sits, then re-add the canonical one on top.
+  # (A logo created later in step 9 upgrades neofetch to --ascii; a logo
+  # already on disk is honored here directly.)
+  FETCH_LINE="$FETCH_BIN"
+  if [ "$FETCH_BIN" = "neofetch" ] && [ -s "$FETCH_LOGO" ]; then
+    FETCH_LINE="neofetch --ascii $FETCH_LOGO"
   fi
+  touch "$ZSHRC"
+  grep -vxE '(fastfetch|neofetch)([[:space:]].*)?' "$ZSHRC" > "$ZSHRC.tmp" || true
+  cat "$ZSHRC.tmp" > "$ZSHRC" && rm -f "$ZSHRC.tmp"
+  echo -e "$FETCH_LINE\n$(cat "$ZSHRC")" > "$ZSHRC"
 fi
 
 # --------------------------------------------------
