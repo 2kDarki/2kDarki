@@ -140,6 +140,24 @@ else
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
+# The installer never touches a pre-existing .zshrc (we pre-create it
+# empty above), so its template — including the source line that makes
+# $ZSH_THEME and `p10k` actually load — would never land. Wire the block
+# ourselves, idempotently and in load order.
+touch "$ZSHRC"
+if ! grep -qE '^[[:space:]]*export ZSH=' "$ZSHRC"; then
+  echo 'export ZSH="$HOME/.oh-my-zsh"' >> "$ZSHRC"
+fi
+if ! grep -q '^ZSH_THEME=' "$ZSHRC"; then
+  echo 'ZSH_THEME="powerlevel10k/powerlevel10k"' >> "$ZSHRC"
+fi
+if ! grep -qE '^[[:space:]]*plugins=' "$ZSHRC"; then
+  echo 'plugins=(git)' >> "$ZSHRC"
+fi
+if ! grep -q 'oh-my-zsh\.sh' "$ZSHRC"; then
+  echo 'source $ZSH/oh-my-zsh.sh' >> "$ZSHRC"
+fi
+
 # --------------------------------------------------
 # 5. Install Powerlevel10k
 # --------------------------------------------------
