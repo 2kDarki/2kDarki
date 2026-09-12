@@ -22,7 +22,9 @@ TOTAL_STEPS=10
 ZSHRC="$HOME/.zshrc"
 SETUP_DIR="$HOME/.termux-setup"
 FASTFETCH_CFG_DIR="$HOME/.config/fastfetch"
-FASTFETCH_LOGO="$HOME/.config/fastfetch/logo.txt"
+NEOFETCH_CFG_DIR="$HOME/.config/neofetch"
+# Tool-neutral logo: the chafa-rendered art both fetch tools share.
+FETCH_LOGO="$HOME/.config/fetch/logo.txt"
 
 step() {
   echo ""
@@ -248,7 +250,7 @@ cat > "$FASTFETCH_CFG_DIR/config.jsonc" << EOF
 {
   "\$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
   "logo": {
-    "source": "$FASTFETCH_LOGO",
+    "source": "$FETCH_LOGO",
     "type": "file"
   },
   "modules": [
@@ -280,15 +282,59 @@ cat > "$FASTFETCH_CFG_DIR/config.jsonc" << EOF
   ]
 }
 EOF
+elif [ "$FETCH_BIN" = "neofetch" ]; then
+step 8 "Writing neofetch config..."
+mkdir -p "$NEOFETCH_CFG_DIR"
+
+# Module list mirrors the fastfetch config above (os, host, uptime,
+# packages, shell, terminal, cpu, gpu, memory, disk, ip, colors).
+# The logo itself is wired separately (see step 9): neofetch only takes
+# a custom ascii *file* via --ascii, which does not exist until the
+# user picks an image.
+cat > "$NEOFETCH_CFG_DIR/config.conf" << 'EOF'
+print_info() {
+  info title
+  info underline
+  info "OS" distro
+  info "Host" model
+  info "Uptime" uptime
+  info "Packages" packages
+  info "Shell" shell
+  info "Terminal" term
+  info "CPU" cpu
+  info "GPU" gpu
+  info "Memory" memory
+  info "Disk" disk
+  info "Local IP" local_ip
+  info "Locale" locale
+  info cols
+}
+
+title_fqdn="off"
+package_managers="on"
+os_arch="on"
+cpu_cores="logical"
+memory_percent="on"
+disk_show=('/')
+disk_subtitle="mount"
+colors=(distro)
+bold="on"
+underline_enabled="on"
+separator=":"
+stdout="off"
+EOF
 else
-  step 8 "No fastfetch here; skipping its config."
+  step 8 "No fetch tool here; skipping its config."
 fi
 
 # --------------------------------------------------
-# 9. Fastfetch logo generator (needs fastfetch; neofetch has its own art)
+# 9. Logo generator (shared art; fastfetch reads it from its config,
+#    neofetch gets it via --ascii wired below)
 # --------------------------------------------------
-if [ "$FETCH_BIN" = "fastfetch" ]; then
-step 9 "Setting up fastfetch logo..."
+if [ -z "$FETCH_BIN" ]; then
+  step 9 "No fetch tool here; skipping logo setup."
+else
+step 9 "Setting up fetch logo..."
 mkdir -p "$SETUP_DIR"
 
 cat > "$SETUP_DIR/generate_logo.py" << 'PYEOF'
@@ -298,7 +344,7 @@ import shutil
 import subprocess
 import sys
 
-FASTFETCH_LOGO = os.path.expanduser("~/.config/fastfetch/logo.txt")
+FETCH_LOGO = os.path.expanduser("~/.config/fetch/logo.txt")
 
 # ImageMagick 7 ships `magick`; 6 (Debian/Ubuntu) only `convert`.
 CONVERT_BIN = shutil.which("magick") or shutil.which("convert")
@@ -352,23 +398,23 @@ def prompt_for_size():
         return "31x50"
 
 def convert_and_render(image_path, gamma, size):
-    os.makedirs(os.path.dirname(FASTFETCH_LOGO), exist_ok=True)
+    os.makedirs(os.path.dirname(FETCH_LOGO), exist_ok=True)
     convert_cmd = [CONVERT_BIN, image_path, "-gamma", gamma, "png:-"]
     chafa_cmd = ["chafa", f"--size={size}", "--symbols=block+quad", "-"]
 
-    with open(FASTFETCH_LOGO, "w") as out_file:
+    with open(FETCH_LOGO, "w") as out_file:
         p1 = subprocess.Popen(convert_cmd, stdout=subprocess.PIPE)
         p2 = subprocess.Popen(chafa_cmd, stdin=p1.stdout, stdout=out_file)
         p1.stdout.close()
         p2.communicate()
 
     if p2.returncode == 0:
-        print(f"Logo successfully saved to {FASTFETCH_LOGO}")
+        print(f"Logo successfully saved to {FETCH_LOGO}")
 
 def main():
     if not check_dependencies():
         return
-    print("=== Fastfetch Logo Generator ===")
+    print("=== Fetch Logo Generator ===")
     image_path = prompt_for_image()
     if not image_path:
         return
@@ -382,8 +428,15 @@ PYEOF
 
 PYTHON_BIN=$(command -v python3 || command -v python)
 $PYTHON_BIN "$SETUP_DIR/generate_logo.py" || true
-else
-  step 9 "No fastfetch here; skipping logo setup."
+if [ "$FETCH_BIN" = "neofetch" ] && [ -s "$FETCH_LOGO" ]; then
+  # A custom ascii file can only be attached via --ascii (there is no
+  # config key for it), and the file does not exist until the user picks
+  # an image above — so upgrade the plain call wired in step 7 now.
+  if grep -qx 'neofetch' "$ZSHRC"; then
+    sed -i.bak "s|^neofetch\$|neofetch --ascii $FETCH_LOGO|" "$ZSHRC" && rm -f "$ZSHRC.bak"
+    echo "neofetch will use your custom logo."
+  fi
+fi
 fi
 
 touch "$HOME/.hushlogin"
