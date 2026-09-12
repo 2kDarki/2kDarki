@@ -162,6 +162,12 @@ fi
 # 6. Install Nerd Font (FiraCode Mono)
 # --------------------------------------------------
 step 6 "Installing Nerd Font (FiraCode Mono)..."
+FONT_MARKER="$SETUP_DIR/font-firacode-mono-installed"
+mkdir -p "$SETUP_DIR"
+if [ -f "$FONT_MARKER" ]; then
+  echo "FiraCode Mono Nerd Font already installed, skipping."
+  echo "(Delete $FONT_MARKER to force a reinstall.)"
+else
 TMP_ZIP="$HOME/nerdfont.zip"
 TMP_DIR="$HOME/nerdfont_tmp"
 
@@ -204,6 +210,8 @@ else
 fi
 
 rm -rf "$TMP_ZIP" "$TMP_DIR"
+touch "$FONT_MARKER"
+fi
 
 # Change Default Shell safely
 ZSH_PATH=$(command -v zsh || true)
