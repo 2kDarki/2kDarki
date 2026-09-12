@@ -262,27 +262,23 @@ else
 fi
 
 # --------------------------------------------------
-# 7. Wire fetch tool into .zshrc, always at line 1
+# 7. Wire fetch tool into .zshrc
 # --------------------------------------------------
 if [ -z "$FETCH_BIN" ]; then
   step 7 "No fetch tool available; skipping."
 else
-  step 7 "Wiring $FETCH_BIN into .zshrc (line 1)..."
-  # The fetch call must stay the first line, above p10k's instant-prompt
-  # block: `p10k configure` inserts its block at the top, pushing a
-  # previously wired call down, and output below the block trips p10k's
-  # console-I/O-during-preamble warning. So strip any existing fetch
-  # invocation wherever it sits, then re-add the canonical one on top.
-  # (A logo created later in step 9 upgrades neofetch to --ascii; a logo
-  # already on disk is honored here directly.)
-  FETCH_LINE="$FETCH_BIN"
-  if [ "$FETCH_BIN" = "neofetch" ] && [ -s "$FETCH_LOGO" ]; then
-    FETCH_LINE="neofetch --ascii $FETCH_LOGO"
+  step 7 "Wiring $FETCH_BIN into .zshrc..."
+  if grep -qx "$FETCH_BIN" "$ZSHRC" || { [ "$FETCH_BIN" = "neofetch" ] && grep -qxF "neofetch --ascii $FETCH_LOGO" "$ZSHRC"; }; then
+    echo "$FETCH_BIN already present in .zshrc, skipping."
+  else
+    echo -e "$FETCH_BIN\n$(cat "$ZSHRC")" > "$ZSHRC"
   fi
-  touch "$ZSHRC"
-  grep -vxE '(fastfetch|neofetch)([[:space:]].*)?' "$ZSHRC" > "$ZSHRC.tmp" || true
-  cat "$ZSHRC.tmp" > "$ZSHRC" && rm -f "$ZSHRC.tmp"
-  echo -e "$FETCH_LINE\n$(cat "$ZSHRC")" > "$ZSHRC"
+  echo ""
+  echo "NOTE: keep the '$FETCH_BIN' call at line 1 of ~/.zshrc, above the"
+  echo "Powerlevel10k instant-prompt block. 'p10k configure' inserts its"
+  echo "block at the very top and pushes the call down, which triggers"
+  echo "p10k's console-I/O-during-preamble warning — just move the line"
+  echo "back above the block if that happens."
 fi
 
 # --------------------------------------------------
@@ -496,6 +492,9 @@ touch "$HOME/.hushlogin"
 # 10. Reload into Zsh
 # --------------------------------------------------
 step 10 "Done. Reloading into zsh..."
+if [ -n "$FETCH_BIN" ]; then
+  echo "Reminder: after 'p10k configure', keep '$FETCH_BIN' at line 1 of ~/.zshrc."
+fi
 if [ -z "$ZSH_PATH" ]; then
   echo "ERROR: zsh not found in PATH; start it manually."
   exit 1
