@@ -1,10 +1,22 @@
 #!/usr/bin/env bash
 #
-# Multi-Platform Zsh + Powerlevel10k + Nerd Font + Fastfetch Setup
+# Multi-Platform Zsh + Powerlevel10k + Nerd Font + Fetch Setup
 # Supports: Termux, Debian/Ubuntu, Arch, Fedora, Alpine, macOS
+#
+# Fetch tool and fancy ls degrade gracefully by distro release:
+# fastfetch -> neofetch -> none, lsd -> plain ls. Whatever resolves
+# gets installed and wired; whatever is missing is skipped, never fatal
+# (except the base set below, which every supported distro ships).
 #
 
 set -e
+
+if [ -z "${BASH_VERSION:-}" ]; then
+  echo "ERROR: this script needs bash, which is not installed here."
+  echo "  Alpine:  apk add --no-cache bash curl"
+  echo "Then re-run with:  bash termux-ricing.sh"
+  exit 1
+fi
 
 TOTAL_STEPS=10
 ZSHRC="$HOME/.zshrc"
@@ -74,10 +86,46 @@ step 2 "Upgrading system packages..."
 # 3. Install dependencies
 # --------------------------------------------------
 step 3 "Installing dependencies..."
-PKGS=(openssl git zsh curl unzip fontconfig imagemagick chafa fastfetch python3 lsd)
-[ "$IS_TERMUX" = true ] && PKGS=(openssl git zsh curl unzip fontconfig imagemagick chafa fastfetch python lsd)
+BASE_PKGS=(openssl git zsh curl unzip fontconfig imagemagick chafa)
+if [ "$IS_TERMUX_NATIVE" = true ]; then
+  # Termux names its Python package 'python', not 'python3'.
+  BASE_PKGS+=(python)
+else
+  BASE_PKGS+=(python3)
+fi
 
-install_packages "${PKGS[@]}"
+# Preference tiers, best first. Managers resolve the whole list before
+# installing anything, so a tier with an unavailable package fails fast
+# and cleanly, and we fall through to the next one.
+FETCH_BIN=""
+HAS_LSD=false
+INSTALLED=false
+for tier in "fastfetch lsd" "neofetch lsd" "fastfetch" "neofetch" ""; do
+  if [ -z "$tier" ]; then
+    echo "No fetch tool or lsd on this release; continuing with the base set."
+    if install_packages "${BASE_PKGS[@]}"; then
+      INSTALLED=true
+      break
+    fi
+  # shellcheck disable=SC2086
+  elif install_packages "${BASE_PKGS[@]}" $tier; then
+    INSTALLED=true
+    case " $tier " in
+      *" fastfetch "*) FETCH_BIN="fastfetch" ;;
+      *" neofetch "*) FETCH_BIN="neofetch" ;;
+    esac
+    case " $tier " in
+      *" lsd "*) HAS_LSD=true ;;
+    esac
+    break
+  fi
+  echo "That combination is not fully available here; trying fallbacks..."
+done
+if [ "$INSTALLED" != true ]; then
+  echo "ERROR: Could not install even the base dependency set."
+  exit 1
+fi
+echo "Fetch tool: ${FETCH_BIN:-none}; lsd: $HAS_LSD."
 
 # --------------------------------------------------
 # 4. Install Oh My Zsh
@@ -161,24 +209,33 @@ if [ "$SHELL" != "$ZSH_PATH" ]; then
   chsh -s "$ZSH_PATH" || echo "Warning: Could not automatically set default shell to Zsh."
 fi
 
-# Set lsd alias cross-platform
-if ! grep -q 'alias ls="lsd"' "$ZSHRC"; then
-  echo 'alias ls="lsd"' >> "$ZSHRC"
-fi
-
-# --------------------------------------------------
-# 7. Wire fastfetch into .zshrc
-# --------------------------------------------------
-step 7 "Wiring fastfetch into .zshrc..."
-if ! grep -qx 'fastfetch' "$ZSHRC"; then
-  echo -e "fastfetch\n$(cat "$ZSHRC")" > "$ZSHRC"
+# Set lsd alias when it installed; plain ls otherwise.
+if [ "$HAS_LSD" = true ] && command -v lsd >/dev/null 2>&1; then
+  if ! grep -q 'alias ls="lsd"' "$ZSHRC"; then
+    echo 'alias ls="lsd"' >> "$ZSHRC"
+  fi
 else
-  echo "fastfetch already present in .zshrc, skipping."
+  echo "Note: lsd is unavailable on this distro release; skipping the ls alias."
 fi
 
 # --------------------------------------------------
-# 8. Write fastfetch config
+# 7. Wire fetch tool into .zshrc
 # --------------------------------------------------
+if [ -z "$FETCH_BIN" ]; then
+  step 7 "No fetch tool available; skipping."
+else
+  step 7 "Wiring $FETCH_BIN into .zshrc..."
+  if ! grep -qx "$FETCH_BIN" "$ZSHRC"; then
+    echo -e "$FETCH_BIN\n$(cat "$ZSHRC")" > "$ZSHRC"
+  else
+    echo "$FETCH_BIN already present in .zshrc, skipping."
+  fi
+fi
+
+# --------------------------------------------------
+# 8. Write fastfetch config (fastfetch only; neofetch ships sane defaults)
+# --------------------------------------------------
+if [ "$FETCH_BIN" = "fastfetch" ]; then
 step 8 "Writing fastfetch config..."
 mkdir -p "$FASTFETCH_CFG_DIR"
 
@@ -223,10 +280,14 @@ cat > "$FASTFETCH_CFG_DIR/config.jsonc" << EOF
   ]
 }
 EOF
+else
+  step 8 "No fastfetch here; skipping its config."
+fi
 
 # --------------------------------------------------
-# 9. Fastfetch logo generator
+# 9. Fastfetch logo generator (needs fastfetch; neofetch has its own art)
 # --------------------------------------------------
+if [ "$FETCH_BIN" = "fastfetch" ]; then
 step 9 "Setting up fastfetch logo..."
 mkdir -p "$SETUP_DIR"
 
@@ -239,8 +300,15 @@ import sys
 
 FASTFETCH_LOGO = os.path.expanduser("~/.config/fastfetch/logo.txt")
 
+# ImageMagick 7 ships `magick`; 6 (Debian/Ubuntu) only `convert`.
+CONVERT_BIN = shutil.which("magick") or shutil.which("convert")
+
 def check_dependencies():
-    missing = [tool for tool in ("magick", "chafa") if shutil.which(tool) is None]
+    missing = []
+    if CONVERT_BIN is None:
+        missing.append("magick/convert (ImageMagick)")
+    if shutil.which("chafa") is None:
+        missing.append("chafa")
     if missing:
         print(f"Missing required tools: {', '.join(missing)}")
         return False
@@ -285,7 +353,7 @@ def prompt_for_size():
 
 def convert_and_render(image_path, gamma, size):
     os.makedirs(os.path.dirname(FASTFETCH_LOGO), exist_ok=True)
-    convert_cmd = ["magick", image_path, "-gamma", gamma, "png:-"]
+    convert_cmd = [CONVERT_BIN, image_path, "-gamma", gamma, "png:-"]
     chafa_cmd = ["chafa", f"--size={size}", "--symbols=block+quad", "-"]
 
     with open(FASTFETCH_LOGO, "w") as out_file:
@@ -314,6 +382,9 @@ PYEOF
 
 PYTHON_BIN=$(command -v python3 || command -v python)
 $PYTHON_BIN "$SETUP_DIR/generate_logo.py" || true
+else
+  step 9 "No fastfetch here; skipping logo setup."
+fi
 
 touch "$HOME/.hushlogin"
 
