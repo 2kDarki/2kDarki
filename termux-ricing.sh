@@ -206,8 +206,11 @@ fi
 rm -rf "$TMP_ZIP" "$TMP_DIR"
 
 # Change Default Shell safely
-ZSH_PATH=$(which zsh)
-if [ "$SHELL" != "$ZSH_PATH" ]; then
+ZSH_PATH=$(command -v zsh || true)
+if [ -z "$ZSH_PATH" ]; then
+  echo "Warning: zsh not found in PATH; skipping chsh and final reload."
+fi
+if [ -n "$ZSH_PATH" ] && [ "$SHELL" != "$ZSH_PATH" ]; then
   chsh -s "$ZSH_PATH" || echo "Warning: Could not automatically set default shell to Zsh."
 fi
 
@@ -445,4 +448,12 @@ touch "$HOME/.hushlogin"
 # 10. Reload into Zsh
 # --------------------------------------------------
 step 10 "Done. Reloading into zsh..."
-exec "$ZSH_PATH" -l
+if [ -z "$ZSH_PATH" ]; then
+  echo "ERROR: zsh not found in PATH; start it manually."
+  exit 1
+fi
+# stdin is the (now spent) download pipe when run as `curl ... | bash`;
+# hand zsh the controlling terminal instead, or it sees EOF, runs
+# non-interactively and quits at once, dropping back to the old shell.
+# The fallback covers headless runs with no controlling terminal.
+exec "$ZSH_PATH" -l < /dev/tty || exec "$ZSH_PATH" -l
